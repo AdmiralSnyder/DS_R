@@ -1,0 +1,117 @@
+<!-- View Preview: Ctrl-K-V -->
+
+---
+title: "Data Science SoSe 2014: Einsendeaufgabe 4"
+author: "Alexander Gayko, TH Brandenburg" 
+date: "2024-05-12"
+output: html_document
+---
+
+# Introduction
+- Note: I'm working in VS Code, because i don't want to install RStudio.
+
+## Botanical Context: 
+- Sepal - Kelchblatt
+- Petal - Blütenblatt
+- Iris Setosa - Borstenschwertlilie
+- Iris Virginica - Blaue Sumpfschwertlilie
+- Iris Versicolor - Schillernde Schwertlilie
+
+# Assignment:
+
+## Preparations
+1. Download Rstudio & R
+2. Use Rstudio(Posit) to create rmarkdown file
+3. Running the following analysis from Rmarkdown
+
+### Configuration
+- download package ggplot2
+```{r}
+#install.packages("ggplot2")
+library(ggplot2)
+```
+- import the data("iris")
+```{r}
+data("iris")
+# head(iris) # Anzeigen der ersten Paar Zeilen
+```
+- use the ggplot for all the tasks below
+
+## Scatter Plot
+- make a scatter plot with x-axis: Sepal.Length and y-axis: Sepal.Width, and the species should be shown in different colors
+```{r}
+ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, color = Species)) +
+  ggtitle("Scatterplot: Width over Length") +
+  geom_point()
+```
+
+## Scatterplot with regression lines
+- add regression line for the previous plot with the whole dataset (regardless of the species)
+```{r}
+ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, color = Species)) +
+  ggtitle("Scatterplot: Width over Length with Regression lines") +
+  geom_point() +
+  geom_smooth(method = "lm")
+```
+
+## Pearson Correlation
+- calculate the Pearson correlation for this plot
+```{r}
+cor.test(iris$Sepal.Width, iris$Sepal.Length,
+         method = "pearson")
+# pearson is the default method, so that parameter is optional
+```
+
+### Conclusion
+The Pearson correlation coefficient of -0.1175698 indicates a weak negative corellation between the sepal's length and width.
+This is to be expected, since sepals are naturally grown objects which need a certain width to support their length without breaking.
+
+## Box Plot
+- make the boxplot for Petal.Width with 3 species separately in the x-axis in different colors
+```{r}
+ggplot(iris, aes(y = Species, x = Petal.Width, color = Species)) +
+  ggtitle("Boxplots Species vs. Petal Width") +
+  geom_point() +
+  geom_boxplot()
+```
+
+## Histogram
+- make the histogram for Petal.Width with 3 species separately in x-axis in different colors
+```{r}
+ggplot(iris, aes(x = Petal.Width, color = Species)) +
+  ggtitle("Histogram: Petal Widths") +
+  geom_histogram(binwidth = 0.05)
+
+```
+
+## T-Test
+- run the t-test of Petal.Width between setosa and virginica, and give the conclusion if the width is a statistically significant difference between 2 species
+```{r}
+t.test(Petal.Width ~ Species, data = iris,
+       subset = Species %in% c("setosa", "virginica"))
+```
+<!--
+### Result
+`
+        Welch Two Sample t-test
+
+data:  Petal.Width by Species
+t = -42.786, df = 63.123, p-value < 2.2e-16
+alternative hypothesis: true difference in means between group setosa and group virginica is not equal to 0
+95 percent confidence interval:
+ -1.863133 -1.696867
+sample estimates:
+   mean in group setosa mean in group virginica
+                  0.246                   2.026 
+`
+-->
+
+### Conclusion
+- The p-value of 0.00000000000000022 is far less than 0.05, so we can reject the null hypothesis, and conclude that the Petal.Width is a statistically significant difference between setosa and virginica
+- This StackExchange answer proposes that that value is actually a placeholder for an even smaller value, output by R when the p-value is too small to be represented in floating point arithmetic: https://stats.stackexchange.com/a/403369
+
+## Submission
+4. knit to html
+
+- You need to submit 2 files, one is the .Rmd file and the other is .html file
+- The github/Gitlab link is acceptable as well.
